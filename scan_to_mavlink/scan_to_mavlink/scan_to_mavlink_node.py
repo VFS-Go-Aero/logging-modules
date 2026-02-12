@@ -11,7 +11,7 @@ class MovingFakeObstacle1D(Node):
 
         self.pub = self.create_publisher(
             ObstacleDistance3D,
-            '/mavros/obstacle/send',
+            '/mavros/obstacle_distance_3d/send',
             10
         )
 
