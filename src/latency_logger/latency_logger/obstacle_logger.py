@@ -1,6 +1,8 @@
 import rclpy
 from rclpy.node import Node
 from mavros_msgs.msg import ObstacleDistance3D
+from sensor_msgs.msg import PointCloud2 as pc2
+
 
 import csv
 import os
@@ -24,7 +26,7 @@ class ObstacleLogger(Node):
         self.get_logger().info(f'Logging obstacles to: {log_path}')
 
         self.subscription = self.create_subscription(
-            ObstacleDistance3D,
+            PointCloud2,
             '/merged_cloud/obstacles',
             self.listener_callback,
             10
@@ -32,14 +34,12 @@ class ObstacleLogger(Node):
 
     def listener_callback(self, msg):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-        x = msg.position.x
-        y = msg.position.y
-        z = msg.position.z
-
-        self.writer.writerow([timestamp, x, y, z])
-        self.csv_file.flush()
-
-        self.get_logger().info(f'Logged -> x: {x:.3f}, y: {y:.3f}, z: {z:.3f}')
+        
+        for point in pc2.read_points(msg, field_names = ('x', 'y', 'z'), skip_nans=True):
+            x, y, z = point
+            self.writer.writerow([timestamp, x, y, z])
+            self.csv_file.flush()
+            self.get_logger().info(f'Logged -> x: {x:.3f}, y: {y:.3f}, z: {z:.3f}')         
 
     def destroy_node(self):
         self.csv_file.close()
