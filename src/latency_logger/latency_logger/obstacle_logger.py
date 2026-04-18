@@ -1,8 +1,7 @@
 import rclpy
 from rclpy.node import Node
-from mavros_msgs.msg import ObstacleDistance3D
-from sensor_msgs.msg import PointCloud2 as pc2
-
+from sensor_msgs.msg import PointCloud2
+import sensor_msgs_py.point_cloud2 as pc2
 
 import csv
 import os
@@ -34,12 +33,23 @@ class ObstacleLogger(Node):
 
     def listener_callback(self, msg):
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-        
-        for point in pc2.read_points(msg, field_names = ('x', 'y', 'z'), skip_nans=True):
+
+        points = list(pc2.read_points(msg, field_names=('x', 'y', 'z'), skip_nans=True))
+
+        if not points:
+            self.writer.writerow([timestamp, 'nil', 'nil', 'nil'])
+            self.csv_file.flush()
+            self.get_logger().info('No points detected -> logged nil')
+            return
+
+        for point in points:
             x, y, z = point
             self.writer.writerow([timestamp, x, y, z])
-            self.csv_file.flush()
-            self.get_logger().info(f'Logged -> x: {x:.3f}, y: {y:.3f}, z: {z:.3f}')         
+            self.get_logger().info(f'Logged -> x: {x:.3f}, y: {y:.3f}, z: {z:.3f}')
+
+        self.csv_file.flush()
+
+        self.csv_file.flush()
 
     def destroy_node(self):
         self.csv_file.close()
@@ -56,7 +66,10 @@ def main(args=None):
         node.get_logger().info('end')
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        try:
+            rclpy.shutdown()
+        except Exception:
+            pass
 
 
 if __name__ == '__main__':
