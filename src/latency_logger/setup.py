@@ -24,6 +24,10 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'data_logger = latency_logger.data_logger:main',
+            'jetson_logger = latency_logger.jetson_logger:main',
+            'obstacle_logger = latency_logger.obstacle_logger:main',
+            'monitor_launcher = latency_logger.monitor_launcher:main',
         ],
     },
 )
