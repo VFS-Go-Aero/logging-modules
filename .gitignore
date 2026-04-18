@@ -49,3 +49,23 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+**/.cmake/api/
+
+# Ignore build/install/log
+build/
+install/
+log/
+src/lightwarelidar2/
+
+# Ignore compiled libraries
+*.so
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore editor/IDE files
+*.swp
+*.idea/
+.vscode/
+
+# Ignore everything else outside source

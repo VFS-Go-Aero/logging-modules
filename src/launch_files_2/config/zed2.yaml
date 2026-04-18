@@ -1,0 +1,9 @@
+/**:
+  ros__parameters:
+    general:
+      camera_name: zed2
+      camera_model: zed
+      serial_number: 42203370
+    video:
+      grab_resolution: HD720
+      grab_frame_rate: 30
