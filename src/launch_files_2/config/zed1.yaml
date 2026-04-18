@@ -1,9 +1,0 @@
-/**:
-  ros__parameters:
-    general:
-      camera_name: zed1
-      camera_model: zed  # or zed2, zed2i, zedx, etc.
-      serial_number: 44659546
-    video:
-      grab_resolution: HD720  # Options: HD2K, HD1080, HD720, VGA
-      grab_frame_rate: 30
